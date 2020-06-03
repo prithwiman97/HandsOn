@@ -1,0 +1,51 @@
+1. Web Api using custom model class
+
+Create a Custom class ‘Employee’ of the below defined structure
+
+public class Employee
+
+{
+
+public int Id { get; set; }
+
+public string Name { get; set; }
+
+public int Salary { get; set; }
+
+public bool Permanent { get; set; }
+
+public Department Department { get; set; }
+
+public List<Skill> Skills { get; set; }
+
+public DateTime DateOfBirth { get; set; }
+
+}
+
+Create a new controller - EmployeeController with Read Write actions
+
+Create a Private method GetStandardEmployeeList that returns a List of Employee class. Invoke this method in the Get action method of the EmployeeController that was created in the previous step.
+
+Modify the return type of the Get action method(without parameter) to return List of Employee class object
+
+Add ProducesResponseType to the GET action method for Status code 200
+
+Check the Swagger description for the GET method for success status code
+
+2. Create a Custom action filter for Authorization.
+
+The requirement is to intercept incoming requests and check if there is a key ‘Authorization’ in the request header or not. If it is there, then to check if it contains a value ‘Bearer’ or not.
+
+Create a folder ‘Filters’ in the application solution. Create a class ‘CustomAuthFilter’ to filter requests. Inherit ActionFilterAttribute. Override OnActionExecuting method to check if the request object has Header ‘Authorization’ or not. If not, throw BadRequestResult with the message
+
+Invalid request - No Auth token
+
+If the header is present, then check if the value contains the word ‘Bearer’. If not, throw BadRequestResult with the message
+
+Invalid request - Token present but Bearer unavailable
+
+Add an attribute CustomAuthFilter to the Employee controller to filter any request to check for the Authorization token in the request header.
+
+3. Custom Exception filter
+
+Create a class ‘CustomExceptionFilter’ to catch the exceptions occuring the application. Implement IExceptionFilter thru the OnException method Use the exception context to fetch the exception detail. Capture that and write it to a File in the system. Set the Result property of the exception context to ExceptionResult. Throw an exception in GET action method. Ensure that the GET action method has ProducesResponseType for 500 - Internal server error Use Swagger to test the exception and message being thrown. Note: This needs WebApiCompatShim NuGet package installation
