@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using Stripe.Issuing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite.Internal.UrlActions;
 
 namespace HandsOn27.Filter
 {
@@ -16,13 +17,14 @@ namespace HandsOn27.Filter
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if(filterContext.HttpContext.Request.Headers.ContainsKey("Authorization"))
+            string authheader = filterContext.HttpContext.Request.Headers["Authorization"];
+            if(authheader==null)
             {
-                filterContext.Result = new OkResult();
+                filterContext.Result = new BadRequestObjectResult("Invalid request - No Auth token");
             }
-            else
+            else if(!authheader.StartsWith("Bearer"))
             {
-                filterContext.Result = new UnauthorizedResult();
+                filterContext.Result = new BadRequestObjectResult("Invalid request - Token present but Bearer Unavailable");
             }
         }
     }
